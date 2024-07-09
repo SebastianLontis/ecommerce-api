@@ -21,7 +21,7 @@ class CategoryController extends Controller
             'slug' => 'required|string|unique:categories,slug|max:255',
             'status' => 'boolean'
         ]);
-
+        
         $category = Category::create($request->all());
         return response()->json($category, 201);
     }
