@@ -19,7 +19,6 @@ Route::post('logout', [AuthenticationController::class, 'logout'])->middleware('
 Route::post('/register', [AuthenticationController::class, 'register'])->withoutMiddleware('auth:sanctum');
 
 // Categories
-// Route::middleware('auth:sanctum')->apiResource('categories', CategoryController::class);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::post('/categories', [CategoryController::class, 'store']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
