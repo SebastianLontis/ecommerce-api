@@ -7,6 +7,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SettingsController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -46,3 +48,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/cart/items/{cartItem}', [CartItemController::class, 'update']);
     Route::delete('/cart/items/{cartItem}', [CartItemController::class, 'destroy']);
 });
+
+// Payment
+Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent']);
+Route::post('/confirm-payment', [PaymentController::class, 'confirmPayment']);
+
+//Setings
+Route::get('/settings', [SettingsController::class, 'show']);
+Route::put('/settings', [SettingsController::class, 'update']);
+
