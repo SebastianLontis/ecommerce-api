@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CartItemController extends Controller
 {
@@ -29,7 +30,13 @@ class CartItemController extends Controller
 
     public function update(Request $request, $itemId): JsonResponse
     {
-        $cartItem = CartItem::where('cart_id', Auth::user()->cart->id)->findOrFail($itemId);
+        $cart = Cart::where('user_id', Auth::id())->first();
+
+        if (!$cart) {
+            return response()->json(['message' => 'Cart not found'], 404);
+        }
+
+        $cartItem = CartItem::where('cart_id', $cart->id)->findOrFail($itemId);
 
         $request->validate([
             'quantity' => 'required|integer|min:1',
@@ -42,7 +49,13 @@ class CartItemController extends Controller
 
     public function destroy($itemId): JsonResponse
     {
-        $cartItem = CartItem::where('cart_id', Auth::user()->cart->id)->findOrFail($itemId);
+        $cart = Cart::where('user_id', Auth::id())->first();
+
+        if (!$cart) {
+            return response()->json(['message' => 'Cart not found'], 404);
+        }
+
+        $cartItem = CartItem::where('cart_id', $cart->id)->findOrFail($itemId);
         $cartItem->delete();
 
         return response()->json(null, 204);
