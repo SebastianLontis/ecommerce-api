@@ -8,6 +8,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SettingsController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -54,3 +56,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/favorites', [FavoriteController::class, 'store']);
     Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy']);
 });
+// Payment
+Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent']);
+Route::post('/confirm-payment-intent', [PaymentController::class, 'confirmPaymentIntent']);
+
+//Setings
+Route::get('/settings', [SettingsController::class, 'show']);
+Route::put('/settings', [SettingsController::class, 'update']);
+
