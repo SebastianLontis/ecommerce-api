@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SettingsController;
 
@@ -49,6 +50,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/cart/items/{cartItem}', [CartItemController::class, 'destroy']);
 });
 
+//Favorite
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/favorites', [FavoriteController::class, 'index']);
+    Route::post('/favorites', [FavoriteController::class, 'store']);
+    Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy']);
+});
 // Payment
 Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent']);
 Route::post('/confirm-payment-intent', [PaymentController::class, 'confirmPaymentIntent']);
