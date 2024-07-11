@@ -12,44 +12,42 @@ class PaymentController extends Controller
     {
         $request->validate([
             'amount' => 'required|integer',
-            'currency' => 'required|string|size:3',
+            'currency' => 'nullable|string|size:3',
         ]);
 
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        try {
-            $paymentIntent = PaymentIntent::create([
-                'amount' => $request->amount,
-                'currency' => $request->currency,
-                'automatic_payment_methods' => [
-                    'enabled' => true,
-                    'allow_redirects' => 'never',
-                ],
-            ]);
+        $currency = $request->currency ?: config('app.currency', 'usd');
 
-            return response()->json([
-                'client_secret' => $paymentIntent->client_secret,
-                'id' => $paymentIntent->id,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $request->amount,
+            'currency' => $currency,
+            'automatic_payment_methods' => [
+                'enabled' => true,
+                'allow_redirects' => 'never', 
+            ],
+        ]);
+  
+        return response()->json($paymentIntent);
     }
 
-    public function confirmPayment(Request $request)
+    public function confirmPaymentIntent(Request $request)
     {
         $request->validate([
             'payment_intent_id' => 'required|string',
+            'payment_method' => 'required|string',
         ]);
 
         Stripe::setApiKey(config('services.stripe.secret'));
 
         try {
             $paymentIntent = PaymentIntent::retrieve($request->payment_intent_id);
-            $paymentIntent->confirm();
+            $paymentIntent->confirm([
+                'payment_method' => $request->payment_method,
+            ]);
 
             return response()->json(['message' => 'Payment successfully processed']);
-        } catch (\Exception $e) {
+        } catch (\Stripe\Exception\ApiErrorException $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
