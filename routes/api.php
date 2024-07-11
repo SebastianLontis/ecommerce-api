@@ -38,7 +38,7 @@ Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::put('/products/{product}', [ProductController::class, 'update']);
 Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
-// Cart
+// Cart and Favorites
 Route::middleware('auth:sanctum')->group(function () {
     // Cart routes
     Route::get('/cart', [CartController::class, 'index']);
@@ -48,14 +48,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/cart/items', [CartItemController::class, 'store']);
     Route::put('/cart/items/{cartItem}', [CartItemController::class, 'update']);
     Route::delete('/cart/items/{cartItem}', [CartItemController::class, 'destroy']);
-});
 
-//Favorite
-Route::middleware('auth:sanctum')->group(function () {
+    // Favorite 
     Route::get('/favorites', [FavoriteController::class, 'index']);
     Route::post('/favorites', [FavoriteController::class, 'store']);
     Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy']);
 });
+
 // Payment
 Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent']);
 Route::post('/confirm-payment-intent', [PaymentController::class, 'confirmPaymentIntent']);
